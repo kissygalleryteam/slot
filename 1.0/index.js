@@ -1,5 +1,5 @@
 /**
- * @fileoverview 
+ * @fileoverview  老虎机组件
  * @author 顺堂<wuming.xiaowm@taobao.com>
  * @module slot
  **/
@@ -15,17 +15,17 @@ KISSY.add(function (S, Node,Base) {
     function Slot(Jnode, itemHeight, itemSize, cfg) {
         var self = this;
 
-		this.items = $(Jnode).all('.slot-item');
-		this.itemHeight = itemHeight;
-		this.itemSize = itemSize;
-		this.cfg = cfg;
+        this.items = $(Jnode).all('.slot-item');
+        this.itemHeight = itemHeight;
+        this.itemSize = itemSize;
+        this.cfg = cfg;
 
-		this.initializer();
+        this.initializer();
 
     }
-	
-	Slot.prototype = {
-		// 速度
+    
+    Slot.prototype = {
+        // 速度
         _speed : 20,
         // 每次移动像素
         _movePx : 0,
@@ -36,7 +36,7 @@ KISSY.add(function (S, Node,Base) {
          * @param  {dom} Jnode
          * @param  {obj} cfg
          */
-		initializer: function() {
+        initializer: function() {
             var self = this;
             //设置速度
             self._setMovePx();
@@ -170,7 +170,7 @@ KISSY.add(function (S, Node,Base) {
         _setStopPos : function(winArr){
             var self = this;
             for(var i=0,len=self.items.length;i<len;i++){
-                if(winArr[i] > self.itemSize[i]){
+                if(winArr[i] > self.itemSize[i]-1){
                     self._stopPos[i] = 0;
                 }else{
                     self._stopPos[i] = winArr[i];
@@ -188,9 +188,9 @@ KISSY.add(function (S, Node,Base) {
             if(Math.abs(value) >= self.itemSize[n] * self.itemHeight){
                 value = self.itemHeight;
             }
-            //停止
-            if(Math.abs((self._stopPos[n] * self.itemHeight + value)) < (self.itemHeight / 6 + self._makeUp)){
-                value = -(self._stopPos[n]-1) * self.itemHeight - self._makeUp;
+            //停止  
+            if(parseInt(value / self.itemHeight)  == -self._stopPos[n]){
+                value = -self.itemHeight * self._stopPos[n] + self._makeUp;
                 Jnode.css('background-position-y',value);
                 self._pos[n] = value;
                 self._updateScrollStatus(n);
@@ -271,7 +271,7 @@ KISSY.add(function (S, Node,Base) {
             }
             return res;
         }
-	};
+    };
 
     return Slot;
 }, {requires:['node', 'base']});
