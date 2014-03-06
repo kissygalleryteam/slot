@@ -1,5 +1,5 @@
 /**
- * @fileoverview  老虎机
+ * @fileoverview 
  * @author 顺堂<wuming.xiaowm@taobao.com>
  * @module slot
  **/
@@ -61,12 +61,15 @@ KISSY.add(function (S, Node,Base) {
             var self = this;
             self._movePx = self.itemHeight / 4;
         },
+        //游戏状态
+        _gamgeStatus : false,
         /**
          * 启动
          * @param  {Function} callback 回调
          */
         start : function(callback){
             var self = this;
+            self._gamgeStatus = true;
             //清空停止位置
             self._stopPos = [];
             self._setStartTime();
@@ -183,23 +186,17 @@ KISSY.add(function (S, Node,Base) {
                 itemSize = self.itemSize[n],
                 itemHeight = self.itemHeight;
             
-            Jnode.css('background-position-y',value);
-
-            var stop = self._stopPos[n]-1;
-            if(stop == -1){
-                if(parseInt(-value / itemHeight % itemSize)+1 == itemSize){
-                    self._pos[n] = value;
-                    self._updateScrollStatus(n);
-                    return;
-                }
-            }else{
-                if(parseInt(-value/itemHeight % itemSize) == stop){
-                    self._pos[n] = value;
-                    self._updateScrollStatus(n);
-                    return;
-                }
+            if(-value > itemSize * itemHeight){
+                value = itemSize * itemHeight + value;
             }
-            
+            Jnode.css('background-position-y',value);
+            if(Math.abs(self._stopPos[n] * itemHeight + value) < itemHeight/10){
+                value = -self._stopPos[n] * itemHeight;
+                Jnode.css('background-position-y',value);
+                self._pos[n] = value;
+                self._updateScrollStatus(n);
+                return;
+            }
             
             
             setTimeout(function(){
@@ -270,3 +267,6 @@ KISSY.add(function (S, Node,Base) {
 
     return Slot;
 }, {requires:['node', 'base']});
+
+
+
