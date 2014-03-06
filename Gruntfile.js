@@ -181,7 +181,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-sass');
 
 	grunt.registerTask('build', '默认构建任务', function() {
-		task.run(['clean:build', 'kmc','uglify', 'copy','less','sass','cssmin']);
+		task.run(['clean:build', 'kmc','uglify', 'copy','sass','cssmin']);
 	});
 
 	// 启动Debug调试时的本地服务：grunt debug

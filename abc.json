@@ -1,8 +1,8 @@
 {
     "name": "slot",
     "comName":"Slot",
-    "version": "2.0",
-    "desc": "",
+    "version": "1.0",
+    "desc": "老虎机",
     "tag":"老虎机",
     "githubName":"xiaowuming@gmail.com",
     "author": {
