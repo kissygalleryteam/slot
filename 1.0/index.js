@@ -1,5 +1,5 @@
 /**
- * @fileoverview  老虎机组件
+ * @fileoverview 
  * @author 顺堂<wuming.xiaowm@taobao.com>
  * @module slot
  **/
@@ -15,33 +15,29 @@ KISSY.add(function (S, Node,Base) {
     function Slot(Jnode, itemHeight, itemSize, cfg) {
         var self = this;
 
-        this.items = $(Jnode).all('.slot-item');
-        this.itemHeight = itemHeight;
-        this.itemSize = itemSize;
-        this.cfg = cfg;
+		this.items = $(Jnode).all('.slot-item');
+		this.itemHeight = itemHeight;
+		this.itemSize = itemSize;
+		this.cfg = cfg;
 
-        this.initializer();
+		this.initializer();
 
     }
-    
-    Slot.prototype = {
-        // 速度
+	
+	Slot.prototype = {
+		// 速度
         _speed : 20,
         // 每次移动像素
         _movePx : 0,
-        // 额外增加的值
-        _makeUp : 0,
         /**
          * 初始化
          * @param  {dom} Jnode
          * @param  {obj} cfg
          */
-        initializer: function() {
+		initializer: function() {
             var self = this;
             //设置速度
             self._setMovePx();
-            //设置要额外增加的值
-            self._setMakeUp();
             //排列
             self._specifySort();
             // 滚动延时
@@ -65,12 +61,15 @@ KISSY.add(function (S, Node,Base) {
             var self = this;
             self._movePx = self.itemHeight / 4;
         },
+        //游戏状态
+        _gamgeStatus : false,
         /**
          * 启动
          * @param  {Function} callback 回调
          */
         start : function(callback){
             var self = this;
+            self._gamgeStatus = true;
             //清空停止位置
             self._stopPos = [];
             self._setStartTime();
@@ -134,10 +133,10 @@ KISSY.add(function (S, Node,Base) {
             self._tmpSpeed = speed;
             self._tmpMovePx = movePx;
 
-            self._speed = speed * 1.3;
+            self._speed = speed * 1.1;
             self._movePx = self.itemHeight / 6;
             setTimeout(function(){
-                self._speed = speed * 1.1;
+                self._speed = speed * 1.2;
                 self._movePx = self.itemHeight / 10;
             },600);
             setTimeout(function(){
@@ -156,7 +155,6 @@ KISSY.add(function (S, Node,Base) {
                 if(self._callback){
                     self._speed = self._tmpSpeed;
                     self._movePx = self._tmpMovePx;
-                    //console.log(self._speed);
                     delete self._tmpSpeed;
                     delete self._tmpMovePx;
                     self._callback();
@@ -182,34 +180,29 @@ KISSY.add(function (S, Node,Base) {
          * @param  {dom} Jnode
          * @param  {int} n
          */
-        _scroll : function(Jnode, n){
+        _scroll : function(Jnode, n, i){
             var self = this;
-            var value = self._pos[n] - self._movePx;
-            if(Math.abs(value) >= self.itemSize[n] * self.itemHeight){
-                value = self.itemHeight;
+            var value = parseInt(self._pos[n] - self._movePx),
+                itemSize = self.itemSize[n],
+                itemHeight = self.itemHeight;
+            
+            if(-value > itemSize * itemHeight){
+                value = itemSize * itemHeight + value;
             }
-            //停止  
-            if(parseInt(value / self.itemHeight)  == -self._stopPos[n]){
-                value = -self.itemHeight * self._stopPos[n] + self._makeUp;
+            Jnode.css('background-position-y',value);
+            if(Math.abs(self._stopPos[n] * itemHeight + value) < itemHeight/10){
+                value = -self._stopPos[n] * itemHeight;
                 Jnode.css('background-position-y',value);
                 self._pos[n] = value;
                 self._updateScrollStatus(n);
                 return;
             }
-
-            Jnode.css('background-position-y',value);
-
+            
+            
             setTimeout(function(){
                 self._pos[n] = value;
                 self._scroll(Jnode, n);
             },self._speed);
-        },
-        /**
-         * 设置要额外增加的值
-         */
-        _setMakeUp : function(){
-            var self = this;
-            self._makeUp = self.cfg.makeUp || 0;
         },
         /**
          * 按指定的熟悉排序
@@ -218,8 +211,7 @@ KISSY.add(function (S, Node,Base) {
             var self = this,
                 len = self.itemSize.length,
                 itemHeight = self.itemHeight,
-                items = self.items,
-                makeUp = self._makeUp;
+                items = self.items;
 
             //判断有没有设置默认显示，如果没有，随机显示
             var defaultSort = self.cfg.defaultSort;
@@ -238,8 +230,8 @@ KISSY.add(function (S, Node,Base) {
             }
 
             for(var i = 0; i < len; i++){
-                var value = -defaultSort[i] * itemHeight + makeUp;
-                $(items.item(i)).css('background-position-y',-defaultSort[i] * itemHeight + makeUp);
+                var value = -defaultSort[i] * itemHeight;
+                $(items.item(i)).css('background-position-y',-defaultSort[i] * itemHeight);
                 self._pos[i] = value;
             }
         },
@@ -271,7 +263,7 @@ KISSY.add(function (S, Node,Base) {
             }
             return res;
         }
-    };
+	};
 
     return Slot;
 }, {requires:['node', 'base']});
