@@ -1,14 +1,10 @@
 ## 综述
 
-Slot是。
-
-* 版本：2.0.0
-* 作者：顺堂
-* demo：[http://kg.kissyui.com/slot/2.0.0/demo/index.html](http://kg.kissyui.com/slot/2.0.0/demo/index.html)
+Slot是简单的老虎机游戏组件。
 
 ## 初始化组件
 
-    S.use('kg/slot/2.0.0/index', function (S, Slot) {
+    S.use('kg/slot/2.1.0/index', function (S, Slot) {
          var slot = new Slot('#id',itemHeight,[9,9,9],{speed:10});
     })
 * **初始化参数说明
